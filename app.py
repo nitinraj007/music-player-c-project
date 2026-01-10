@@ -161,5 +161,43 @@ def upload_file():
 
         return jsonify({"success": True, "filename": filename})
 
+@app.route('/delete', methods=['POST'])
+def delete_song():
+    data = request.json
+    filename = data.get('filename')
+    song_id = data.get('id')
+
+    # 1. Remove from File System
+    try:
+        file_path = os.path.join(MUSIC_FOLDER, filename)
+        if os.path.exists(file_path):
+            os.remove(file_path)
+    except Exception as e:
+        print(f"Delete Error: {e}")
+
+    # 2. Remove from songs.txt
+    try:
+        if os.path.exists(SONG_DB_FILE):
+            with open(SONG_DB_FILE, "r") as f:
+                lines = f.readlines()
+            
+            with open(SONG_DB_FILE, "w") as f:
+                for line in lines:
+                    if line.strip() != filename:
+                        f.write(line)
+    except Exception as e:
+        print(f"Error updating DB: {e}")
+
+    # 3. Tell C to delete from memory
+    if c_process and c_process.stdin:
+        try:
+            cmd = f"12 {song_id}\n"
+            c_process.stdin.write(cmd)
+            c_process.stdin.flush()
+        except:
+            pass
+
+    return jsonify({"success": True})
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)
