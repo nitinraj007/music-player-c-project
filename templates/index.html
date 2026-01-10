@@ -9,39 +9,56 @@
     
     <style>
         /* ========================================
-           CORE VARIABLES
+           1. CORE VARIABLES & RESET
            ======================================== */
         :root {
-            --bg-body: #050505;
+            /* Palette */
+            --bg-body: #0a0a0a;
             --bg-sidebar: #000000;
             --bg-terminal: #0d1117;
-            --bg-card: rgba(255, 255, 255, 0.04);
-            --bg-player: rgba(10, 10, 10, 0.9);
+            --bg-card: rgba(255, 255, 255, 0.03);
+            --bg-card-hover: rgba(255, 255, 255, 0.08);
+            --bg-player: rgba(10, 10, 10, 0.85);
             
-            --primary: #bb86fc; 
-            --secondary: #03dac6;
+            /* Accents */
+            --primary: #bb86fc; /* Electric Purple */
+            --secondary: #03dac6; /* Teal Neon */
             --neon-green: #39d353; /* Terminal Green */
             --terminal-text: #c9d1d9;
+            --accent-gradient: linear-gradient(135deg, #bb86fc 0%, #7c4dff 100%);
             
-            --sidebar-width: 220px;
-            --terminal-width: 320px; /* Width of right terminal */
+            /* Typography */
+            --text-main: #ffffff;
+            --text-muted: #b3b3b3;
+            --font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            
+            /* Dimensions */
+            --sidebar-width: 240px;
+            --terminal-width: 320px;
             --player-height: 90px;
             
-            --glass: blur(20px);
+            /* Effects */
+            --glass: blur(20px) saturate(180%);
+            --ease-out: cubic-bezier(0.215, 0.61, 0.355, 1);
         }
 
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             background-color: var(--bg-body);
-            color: white;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            overflow: hidden;
-            height: 100vh;
+            color: var(--text-main);
+            font-family: var(--font-stack);
+            overflow: hidden; 
+            -webkit-font-smoothing: antialiased;
         }
 
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #555; }
+
         /* ========================================
-           LAYOUT GRID
+           2. LAYOUT GRID
            ======================================== */
         .app-container {
             display: grid;
@@ -54,112 +71,105 @@
         }
 
         /* ========================================
-           1. SIDEBAR (Left)
+           3. SIDEBAR (Left)
            ======================================== */
         .sidebar {
             grid-area: sidebar;
-            background: var(--bg-sidebar);
+            background-color: var(--bg-sidebar);
             padding: 24px;
-            border-right: 1px solid rgba(255,255,255,0.05);
             display: flex;
             flex-direction: column;
+            border-right: 1px solid rgba(255,255,255,0.05);
+            z-index: 10;
         }
 
         .brand {
-            font-size: 22px;
+            font-size: 24px;
             font-weight: 800;
-            background: linear-gradient(135deg, #bb86fc, #7c4dff);
+            letter-spacing: -1px;
+            background: var(--accent-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             margin-bottom: 40px;
-            letter-spacing: -1px;
-            display: flex; 
-            align-items: center; 
-            gap: 10px;
+            display: flex; align-items: center; gap: 10px;
         }
+
+        .nav-links { list-style: none; display: flex; flex-direction: column; gap: 8px; }
 
         .nav-item {
-            padding: 12px 0;
-            color: #b3b3b3;
+            padding: 12px 16px;
+            border-radius: 8px;
+            color: var(--text-muted);
             cursor: pointer;
-            transition: 0.2s;
-            display: flex; align-items: center; gap: 12px;
+            transition: all 0.2s var(--ease-out);
             font-weight: 500;
+            display: flex; align-items: center; gap: 12px;
         }
-        .nav-item:hover, .nav-item.active { color: white; }
-        .nav-item.active { color: var(--primary); }
+        .nav-item:hover { color: var(--text-main); background: var(--bg-card-hover); transform: translateX(4px); }
+        .nav-item.active { background: rgba(187, 134, 252, 0.15); color: var(--primary); }
 
-        /* UPLOAD BUTTON IN SIDEBAR */
+        /* Upload Zone in Sidebar */
         .upload-zone {
             margin-top: auto;
             border: 1px dashed rgba(255,255,255,0.2);
             border-radius: 8px;
             padding: 20px;
             text-align: center;
-            transition: 0.2s;
             cursor: pointer;
+            transition: 0.2s;
         }
         .upload-zone:hover { background: rgba(255,255,255,0.05); border-color: var(--primary); }
         .upload-zone p { font-size: 12px; color: #888; margin-top: 8px; }
 
         /* ========================================
-           2. MAIN CONTENT (Center)
+           4. MAIN CONTENT AREA (Center)
            ======================================== */
         .main-view {
             grid-area: main;
-            background: linear-gradient(180deg, #181818 0%, var(--bg-body) 100%);
             overflow-y: auto;
-            padding: 30px;
-        }
-
-        .hero-banner {
-            height: 200px;
-            background: linear-gradient(45deg, #4b107a, #1f1f1f);
-            border-radius: 12px;
-            display: flex;
-            align-items: flex-end;
-            padding: 24px;
-            margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             position: relative;
+            background: linear-gradient(180deg, #1e1e1e 0%, var(--bg-body) 40%);
+            padding: 30px;
+            scroll-behavior: smooth;
+        }
+
+        /* Hero Header */
+        .hero {
+            position: relative;
+            height: 240px;
+            border-radius: 12px;
             overflow: hidden;
+            margin-bottom: 40px;
+            display: flex; align-items: flex-end; padding: 30px;
+            background: #111;
         }
-        /* Abstract circles */
-        .hero-banner::before {
-            content: ''; position: absolute; top: -50px; right: -50px;
-            width: 200px; height: 200px; border-radius: 50%;
-            background: rgba(255,255,255,0.05);
+        .hero-bg {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(45deg, #4b107a, #111, #004d40);
+            background-size: 200% 200%;
+            animation: gradientBG 10s ease infinite;
+            z-index: 1; opacity: 0.6;
         }
+        .hero-content { position: relative; z-index: 2; width: 100%; }
+        .hero h1 { font-size: 3rem; font-weight: 800; margin-bottom: 10px; text-shadow: 0 4px 20px rgba(0,0,0,0.5); }
+        .hero p { color: rgba(255,255,255,0.8); font-size: 14px; }
 
-        .hero-content h1 { font-size: 48px; font-weight: 800; margin-bottom: 10px; }
-        .hero-content p { font-size: 14px; color: rgba(255,255,255,0.7); }
-
-        /* Controls Row */
-        .main-controls {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 30px;
-        }
-        
+        /* Global Controls Row */
+        .main-controls { display: flex; gap: 15px; margin-bottom: 30px; z-index: 5; position: relative; }
         .action-btn {
-            background: rgba(255,255,255,0.1);
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 30px;
-            cursor: pointer;
-            font-size: 13px;
-            font-weight: 600;
-            display: flex; align-items: center; gap: 8px;
+            background: rgba(255,255,255,0.1); border: none; color: white;
+            padding: 10px 24px; border-radius: 30px; cursor: pointer;
+            display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 13px;
             transition: 0.2s;
         }
-        .action-btn:hover { background: rgba(255,255,255,0.2); }
-        .action-btn.primary { background: var(--primary); color: #000; }
-        .action-btn.primary:hover { background: #a370db; }
+        .action-btn:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
+        .action-btn.primary { background: var(--primary); color: #000; box-shadow: 0 4px 15px rgba(187, 134, 252, 0.3); }
 
+        /* Section Headers */
         .section-title { font-size: 20px; font-weight: 700; margin: 30px 0 20px 0; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
         .count-badge { font-size: 12px; background: #333; padding: 2px 8px; border-radius: 10px; color: #aaa; font-weight: normal;}
 
+        /* Card Grid */
         .card-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
@@ -170,184 +180,179 @@
             background: var(--bg-card);
             padding: 16px;
             border-radius: 8px;
-            transition: 0.3s;
+            transition: all 0.3s var(--ease-out);
             cursor: pointer;
             position: relative;
             overflow: hidden;
         }
-        .music-card:hover { background: rgba(255,255,255,0.1); transform: translateY(-5px); }
-        
-        /* Play Overlay */
+        .music-card:hover { background: var(--bg-card-hover); transform: translateY(-8px); box-shadow: 0 10px 30px rgba(0,0,0,0.3); }
+
+        /* Hover Effects */
         .play-overlay {
             position: absolute; top: 16px; right: 16px; 
-            width: 40px; height: 40px; background: var(--neon-green); 
+            width: 40px; height: 40px; background: var(--secondary); 
             border-radius: 50%; display: flex; align-items: center; justify-content: center;
             opacity: 0; transform: translateY(10px); transition: 0.3s;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3); color: black;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); color: black; z-index: 5;
         }
         .music-card:hover .play-overlay { opacity: 1; transform: translateY(0); }
 
+        /* DELETE BUTTON */
+        .delete-btn {
+            position: absolute; top: 10px; left: 10px;
+            color: #ff4d4d; background: rgba(0,0,0,0.6);
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; transition: 0.3s; z-index: 10;
+        }
+        .music-card:hover .delete-btn { opacity: 1; }
+        .delete-btn:hover { background: #ff4d4d; color: white; transform: scale(1.1); }
+
         .card-img { width: 100%; aspect-ratio: 1; border-radius: 4px; background: #222; margin-bottom: 12px; object-fit: cover; }
-        .card-title { font-weight: 600; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; color: white; }
-        .card-sub { font-size: 12px; color: #b3b3b3; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;}
+        .card-title { font-weight: 700; font-size: 14px; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .card-sub { font-size: 12px; color: var(--text-muted); }
 
         /* ========================================
-           3. LIVE TERMINAL (Right)
+           5. TERMINAL PANEL (Right)
            ======================================== */
         .terminal-panel {
             grid-area: terminal;
             background: var(--bg-terminal);
             border-left: 1px solid #30363d;
-            display: flex;
-            flex-direction: column;
+            display: flex; flex-direction: column;
             font-family: 'Courier New', Courier, monospace;
             overflow: hidden;
         }
-
         .term-header {
-            padding: 15px;
-            background: #161b22;
-            border-bottom: 1px solid #30363d;
-            font-size: 12px;
-            color: var(--neon-green);
-            font-weight: bold;
+            padding: 15px; background: #161b22; border-bottom: 1px solid #30363d;
+            font-size: 12px; color: var(--neon-green); font-weight: bold;
             display: flex; justify-content: space-between; align-items: center;
         }
         .status-dot { width: 8px; height: 8px; background: var(--neon-green); border-radius: 50%; box-shadow: 0 0 5px var(--neon-green); }
 
-        .term-logs {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            font-size: 12px;
-            color: var(--terminal-text);
-        }
-
+        .term-logs { flex: 1; padding: 15px; overflow-y: auto; font-size: 12px; color: var(--terminal-text); }
         .log-line { margin-bottom: 6px; word-break: break-all; }
         .log-line.cmd { color: var(--neon-green); }
         .log-line.error { color: #ff7b72; }
-        .log-line.c-out { color: #d2a8ff; } /* Purple for C Output */
-        
-        .term-input-area {
-            padding: 15px;
-            background: #0d1117;
-            border-top: 1px solid #30363d;
-        }
+        .log-line.c-out { color: #d2a8ff; }
+
+        .term-input-area { padding: 15px; background: #0d1117; border-top: 1px solid #30363d; }
         .term-input {
-            width: 100%;
-            background: #010409;
-            border: 1px solid #30363d;
-            color: white;
-            padding: 8px;
-            font-family: inherit;
-            border-radius: 4px;
-            outline: none;
+            width: 100%; background: #010409; border: 1px solid #30363d; color: white;
+            padding: 8px; font-family: inherit; border-radius: 4px; outline: none;
         }
         .term-input:focus { border-color: #58a6ff; }
 
         /* ========================================
-           4. PLAYER BAR (Bottom)
+           6. PLAYER BAR (Bottom)
            ======================================== */
         .player-bar {
             grid-area: player;
             background: var(--bg-player);
             backdrop-filter: var(--glass);
             border-top: 1px solid rgba(255,255,255,0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 24px;
-            z-index: 100;
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 0 24px; z-index: 100; position: relative;
         }
 
-        .now-playing { display: flex; align-items: center; width: 30%; gap: 14px; }
-        .np-img { width: 56px; height: 56px; border-radius: 4px; box-shadow: 0 4px 8px rgba(0,0,0,0.4); }
-        .np-info h4 { font-size: 14px; margin-bottom: 2px; }
-        .np-info p { font-size: 11px; color: #b3b3b3; }
+        .player-track { display: flex; align-items: center; width: 30%; min-width: 180px; }
+        .player-album-art { 
+            width: 56px; height: 56px; border-radius: 4px; margin-right: 16px; 
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3); 
+        }
+        .track-details h4 { font-size: 14px; margin-bottom: 4px; }
+        .track-details p { font-size: 11px; color: var(--text-muted); }
 
         .player-controls { display: flex; flex-direction: column; align-items: center; width: 40%; }
-        .ctrl-btns { display: flex; align-items: center; gap: 20px; margin-bottom: 6px; }
+        .control-buttons { display: flex; align-items: center; gap: 20px; margin-bottom: 8px; }
         
-        .btn-icon { background: none; border: none; color: #b3b3b3; cursor: pointer; font-size: 16px; transition: 0.2s; }
-        .btn-icon:hover { color: white; }
-        
+        .btn-control { background: none; border: none; color: var(--text-muted); cursor: pointer; font-size: 16px; transition: 0.2s; }
+        .btn-control:hover { color: white; }
+
         .btn-play {
-            width: 32px; height: 32px; background: white; color: black; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center; font-size: 14px;
-            transition: transform 0.2s;
+            width: 36px; height: 36px; background: white; color: black;
+            border-radius: 50%; font-size: 14px; display: flex; align-items: center; justify-content: center;
+            transition: transform 0.2s; cursor: pointer;
         }
         .btn-play:hover { transform: scale(1.1); }
 
-        .progress-bar {
-            width: 100%; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px;
-            position: relative; overflow: hidden;
-        }
-        .progress-fill { width: 0%; height: 100%; background: var(--primary); }
+        .progress-container { width: 100%; display: flex; align-items: center; gap: 10px; font-size: 11px; color: var(--text-muted); }
+        .progress-bar-bg { flex-grow: 1; height: 4px; background: rgba(255,255,255,0.1); border-radius: 2px; position: relative; }
+        .progress-fill { height: 100%; width: 0%; background: var(--text-main); border-radius: 2px; }
 
-        .player-extra { width: 30%; display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
+        .player-volume { width: 30%; display: flex; justify-content: flex-end; align-items: center; gap: 10px; }
 
-        /* HIDDEN AUDIO */
+        /* Animations */
+        @keyframes gradientBG { 0% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } 100% { background-position: 0% 50%; } }
+        
+        /* Audio Hidden */
         audio { display: none; }
+
     </style>
 </head>
 <body>
 
-    <!-- HIDDEN AUDIO ENGINE -->
+    <!-- AUDIO ENGINE -->
     <audio id="audioPlayer"></audio>
 
     <div class="app-container">
         
-        <!-- 1. LEFT SIDEBAR -->
+        <!-- SIDEBAR -->
         <aside class="sidebar">
             <div class="brand">
                 <i class="fa-solid fa-bolt"></i> AURA
             </div>
-            <nav>
-                <div class="nav-item active" onclick="sendCommand(10)"><i class="fa-solid fa-house"></i> Home (Library)</div>
-                <div class="nav-item"><i class="fa-solid fa-search"></i> Search</div>
-            </nav>
+            <ul class="nav-links">
+                <li class="nav-item active" onclick="sendCommand(10)">
+                    <i class="fa-solid fa-book-open"></i> <span>Library</span>
+                </li>
+                <li class="nav-item" onclick="document.getElementById('customCmd').focus()">
+                    <i class="fa-solid fa-terminal"></i> <span>Console</span>
+                </li>
+            </ul>
 
-            <!-- UPLOAD AREA -->
+            <!-- UPLOAD ZONE -->
             <div class="upload-zone" onclick="document.getElementById('fileInput').click()">
                 <i class="fa-solid fa-cloud-arrow-up" style="font-size: 24px; color: var(--primary);"></i>
                 <p>Upload Songs (Batch)</p>
-                <!-- Hidden Input -->
                 <input type="file" id="fileInput" multiple style="display:none;" onchange="uploadFiles()">
             </div>
         </aside>
 
-        <!-- 2. MAIN CONTENT -->
+        <!-- MAIN CONTENT -->
         <main class="main-view">
-            <div class="hero-banner">
+            <!-- HERO -->
+            <div class="hero">
+                <div class="hero-bg"></div>
                 <div class="hero-content">
-                    <h1>C-Powered Audio</h1>
-                    <p>Real-Time Backend Logic • Premium Frontend Experience</p>
+                    <h4>C-BACKEND POWERED</h4>
+                    <h1>My Music Library</h1>
+                    <p>Real-time memory management & dynamic playlist control.</p>
                 </div>
             </div>
 
-            <!-- Global Controls -->
+            <!-- CONTROLS -->
             <div class="main-controls">
                 <button class="action-btn primary" onclick="sendCommand(1)"><i class="fa-solid fa-play"></i> Play Global</button>
                 <button class="action-btn" onclick="sendCommand(5)"><i class="fa-solid fa-shuffle"></i> Shuffle</button>
                 <button class="action-btn" onclick="sendCommand(8)"><i class="fa-solid fa-rotate-right"></i> Reload DB</button>
-                <button class="action-btn" onclick="sendCommand(10)"><i class="fa-solid fa-list"></i> Refresh Library</button>
             </div>
 
+            <!-- LIBRARY GRID -->
             <div class="section-title">
-                Your Library (From C Structure)
+                Your Tracks (Syncing with C...)
                 <span class="count-badge" id="songCount">0 Songs</span>
             </div>
             
-            <!-- Dynamic Grid -->
             <div class="card-grid" id="library-grid">
-                <!-- Javascript will inject cards here based on C output -->
+                <!-- Javascript populates this -->
                 <div style="grid-column: 1/-1; padding: 20px; text-align: center; color: #555;">
-                    Initializing C Library... <br> (If empty, try clicking "Reload DB" or Upload Songs)
+                    Connecting to C Backend...
                 </div>
             </div>
         </main>
 
-        <!-- 3. RIGHT TERMINAL -->
+        <!-- TERMINAL -->
         <aside class="terminal-panel">
             <div class="term-header">
                 <span><span class="status-dot"></span> C KERNEL LIVE</span>
@@ -362,12 +367,12 @@
             </div>
         </aside>
 
-        <!-- 4. PLAYER BAR -->
+        <!-- PLAYER BAR -->
         <footer class="player-bar">
             <!-- Info -->
-            <div class="now-playing">
-                <img src="https://picsum.photos/seed/music/200" class="np-img" id="np-art" alt="Art">
-                <div class="np-info">
+            <div class="player-track">
+                <img src="https://picsum.photos/seed/music/200" class="player-album-art" id="np-art" alt="Art">
+                <div class="track-details">
                     <h4 id="trackName">Waiting for C...</h4>
                     <p id="trackStatus">System Standby</p>
                 </div>
@@ -375,86 +380,90 @@
 
             <!-- Controls -->
             <div class="player-controls">
-                <div class="ctrl-btns">
-                    <button class="btn-icon" onclick="sendCommand(5)" title="Shuffle"><i class="fa-solid fa-shuffle"></i></button>
-                    <button class="btn-icon" onclick="sendCommand(4)"><i class="fa-solid fa-backward-step"></i></button>
+                <div class="control-buttons">
+                    <button class="btn-control" onclick="sendCommand(5)" title="Shuffle"><i class="fa-solid fa-shuffle"></i></button>
+                    <button class="btn-control" onclick="sendCommand(4)"><i class="fa-solid fa-backward-step"></i></button>
                     
                     <button class="btn-play" onclick="togglePlayState()">
                         <i class="fa-solid fa-play" id="playIcon"></i>
                     </button>
                     
-                    <button class="btn-icon" onclick="sendCommand(3)"><i class="fa-solid fa-forward-step"></i></button>
-                    <button class="btn-icon" onclick="sendCommand(6)" title="Repeat"><i class="fa-solid fa-repeat"></i></button>
+                    <button class="btn-control" onclick="sendCommand(3)"><i class="fa-solid fa-forward-step"></i></button>
+                    <button class="btn-control" onclick="sendCommand(6)" title="Repeat"><i class="fa-solid fa-repeat"></i></button>
                 </div>
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progressBar"></div>
+                <!-- Fake Progress -->
+                <div class="progress-container">
+                    <span>Active Stream</span>
+                    <div class="progress-bar-bg">
+                        <div class="progress-fill" style="width: 100%; opacity: 0.5;"></div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Extra -->
-            <div class="player-extra">
-                <i class="fa-solid fa-volume-high btn-icon"></i>
+            <!-- Volume -->
+            <div class="player-volume">
+                <i class="fa-solid fa-volume-high btn-control"></i>
             </div>
         </footer>
+
     </div>
 
     <!-- LOGIC SCRIPT -->
     <script>
         const audio = document.getElementById('audioPlayer');
         const term = document.getElementById('terminal');
+        const libraryGrid = document.getElementById('library-grid');
+        const songCountBadge = document.getElementById('songCount');
         const trackName = document.getElementById('trackName');
         const trackStatus = document.getElementById('trackStatus');
         const playIcon = document.getElementById('playIcon');
-        const libraryGrid = document.getElementById('library-grid');
-        const songCountBadge = document.getElementById('songCount');
+        const art = document.getElementById('np-art');
         
         let currentSrc = "";
         let isPlaying = false;
         
-        // State for parsing multi-line C output (Library/Search)
+        // Library Parsing State
         let isParsingLibrary = false;
         let tempLibrary = [];
 
-        // --- COMMAND LOGIC ---
+        // --- 1. COMMANDS ---
         async function sendCommand(val) {
-            // Optimistic UI updates
+            // Optimistic Updates
             if(val === 1) { audio.play(); isPlaying = true; updatePlayIcon(); }
             if(val === 2) { audio.pause(); isPlaying = false; updatePlayIcon(); }
 
-            // If special direct play command (string like "11 5")
-            let payload = {command: val};
-            
             try {
                 await fetch('/send', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(payload)
+                    body: JSON.stringify({command: val})
                 });
-            } catch(e) {
-                addLog("ERROR: Backend Offline", "error");
-            }
+            } catch(e) { addLog("Error: Backend Offline", "error"); }
         }
 
-        // Specific function for playing by ID (Command 11)
         async function playById(id) {
-            addLog(`> Requesting Play ID: ${id}`, "cmd");
-            // We send "11 <ID>" as a string command, or the python needs to handle it
-            // Simple way: Send string "11 <id>" to Python which writes it to C stdin
-            try {
-                await fetch('/send', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({command: `11 ${id}`}) // Python handles strings too
-                });
-            } catch(e) {
-                addLog("ERROR: Play Request Failed", "error");
-            }
+            addLog(`> Requesting ID: ${id}`, "cmd");
+            await fetch('/send', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({command: `11 ${id}`})
+            });
         }
 
-        // Toggle Play/Pause Button
+        async function deleteSong(e, id, filename) {
+            e.stopPropagation(); // Stop card click
+            if(!confirm(`Are you sure you want to delete "${filename}"?`)) return;
+
+            addLog(`> DELETE Request: ${filename}`, "cmd");
+            await fetch('/delete', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({id: id, filename: filename})
+            });
+        }
+
         function togglePlayState() {
-            if (isPlaying) sendCommand(2); // Pause
-            else sendCommand(1); // Play
+            if (isPlaying) sendCommand(2); else sendCommand(1);
         }
 
         function updatePlayIcon() {
@@ -467,33 +476,25 @@
             }
         }
 
-        // --- UPLOAD LOGIC ---
+        // --- 2. UPLOAD ---
         async function uploadFiles() {
-            const fileInput = document.getElementById('fileInput');
-            const files = fileInput.files;
-            if (files.length === 0) return;
+            const files = document.getElementById('fileInput').files;
+            if(files.length === 0) return;
 
-            addLog(`> Starting batch upload (${files.length} files)...`, "cmd");
-
+            addLog(`> Batch Upload: ${files.length} files...`, "cmd");
             for (let i = 0; i < files.length; i++) {
                 const formData = new FormData();
                 formData.append('file', files[i]);
-                addLog(`> Uploading: ${files[i].name}...`, "system");
-
-                try {
-                    await fetch('/upload', { method: 'POST', body: formData });
-                } catch (e) {
-                    addLog(`> Error: ${files[i].name}`, "error");
-                }
+                addLog(`> Uploading: ${files[i].name}`, "system");
+                await fetch('/upload', { method: 'POST', body: formData });
             }
-            addLog("> Upload Complete. Syncing...", "cmd");
-            fileInput.value = "";
+            addLog("> Syncing Database...", "cmd");
             
-            // Trigger Library Refresh after short delay
+            // Refresh Library after delay
             setTimeout(() => sendCommand(10), 1000);
         }
 
-        // --- TERMINAL & POLLING ---
+        // --- 3. TERMINAL & RENDER ---
         function addLog(text, type="") {
             const div = document.createElement('div');
             div.className = `log-line ${type}`;
@@ -517,77 +518,19 @@
             }
         }
 
-        // --- POLLING LOOP (0.5s) ---
-        setInterval(async () => {
-            try {
-                const res = await fetch('/output');
-                const data = await res.json();
-
-                if (data.lines && data.lines.length > 0) {
-                    data.lines.forEach(line => {
-                        
-                        // --- PARSING LOGIC FOR LIBRARY ---
-                        if (line.includes("LIBRARY_START")) {
-                            isParsingLibrary = true;
-                            tempLibrary = [];
-                            return; // Don't log this marker
-                        }
-                        if (line.includes("LIBRARY_END")) {
-                            isParsingLibrary = false;
-                            renderLibrary(tempLibrary);
-                            return; // Don't log this marker
-                        }
-                        if (isParsingLibrary && line.startsWith("LIB|")) {
-                            // Parse "LIB|ID|TITLE"
-                            const parts = line.split("|");
-                            if(parts.length >= 3) {
-                                tempLibrary.push({ id: parts[1], title: parts[2] });
-                            }
-                            return; // Don't log raw data lines to terminal to keep it clean
-                        }
-                        // ---------------------------------
-
-                        // Standard Logging
-                        let type = "c-out";
-                        if (line.includes("NOW_PLAYING")) type = "cmd";
-                        if (line.includes("ACTION")) type = "cmd";
-                        if (line.includes("ERROR")) type = "error";
-                        addLog(line, type);
-
-                        // State Sync
-                        if (line.includes("Playing")) { isPlaying = true; updatePlayIcon(); }
-                        if (line.includes("Paused")) { isPlaying = false; updatePlayIcon(); }
-                    });
-                }
-
-                if (data.current_song && data.current_song !== currentSrc) {
-                    currentSrc = data.current_song;
-                    // Update UI
-                    const cleanName = currentSrc.split('/').pop();
-                    trackName.innerText = cleanName;
-                    trackStatus.innerText = "Active C Stream";
-                    
-                    // Update Audio
-                    audio.src = `/static/music/${currentSrc}`;
-                    if(isPlaying) audio.play().catch(e => console.log("Autoplay blocked"));
-                    
-                    // Update Random Art based on song name seed
-                    document.getElementById('np-art').src = `https://picsum.photos/seed/${cleanName}/200`;
-                }
-            } catch (e) {}
-        }, 500);
-
-        // --- RENDER FUNCTIONS ---
         function renderLibrary(songs) {
             songCountBadge.innerText = `${songs.length} Songs`;
             
             if(songs.length === 0) {
-                libraryGrid.innerHTML = `<div style="grid-column: 1/-1; padding: 20px; text-align: center; color: #555;">No songs found.</div>`;
+                libraryGrid.innerHTML = `<div style="grid-column: 1/-1; padding: 20px; text-align: center; color: #555;">No songs found. Upload some music!</div>`;
                 return;
             }
 
             libraryGrid.innerHTML = songs.map(song => `
                 <div class="music-card" onclick="playById(${song.id})">
+                    <div class="delete-btn" onclick="deleteSong(event, ${song.id}, '${song.title}')" title="Delete Song">
+                        <i class="fa-solid fa-trash"></i>
+                    </div>
                     <img src="https://picsum.photos/seed/${song.title}/200" class="card-img" alt="Cover">
                     <div class="play-overlay"><i class="fa-solid fa-play"></i></div>
                     <div class="card-title">${song.title}</div>
@@ -595,11 +538,59 @@
                 </div>
             `).join('');
             
-            addLog(`> UI: Library updated with ${songs.length} items.`, "system");
+            addLog(`> UI: Library updated (${songs.length} tracks).`, "system");
         }
-        
-        // Initial Fetch
-        setTimeout(() => sendCommand(10), 1000); // Ask for library on load
+
+        // --- 4. POLLING LOOP ---
+        setInterval(async () => {
+            try {
+                const res = await fetch('/output');
+                const data = await res.json();
+
+                if (data.lines && data.lines.length > 0) {
+                    data.lines.forEach(line => {
+                        // LIBRARY PARSING
+                        if (line.includes("LIBRARY_START")) { isParsingLibrary = true; tempLibrary = []; return; }
+                        if (line.includes("LIBRARY_END")) { isParsingLibrary = false; renderLibrary(tempLibrary); return; }
+                        if (isParsingLibrary && line.startsWith("LIB|")) {
+                            const parts = line.split("|");
+                            if(parts.length >= 3) tempLibrary.push({ id: parts[1], title: parts[2] });
+                            return;
+                        }
+
+                        // LOGGING
+                        if (!isParsingLibrary) {
+                            let type = "c-out";
+                            if (line.includes("NOW_PLAYING")) type = "cmd";
+                            if (line.includes("ACTION")) type = "cmd";
+                            if (line.includes("ERROR")) type = "error";
+                            addLog(line, type);
+                        }
+
+                        // SYNC
+                        if (line.includes("Playing")) { isPlaying = true; updatePlayIcon(); }
+                        if (line.includes("Paused")) { isPlaying = false; updatePlayIcon(); }
+                    });
+                }
+
+                // AUDIO SYNC
+                if (data.current_song && data.current_song !== currentSrc) {
+                    currentSrc = data.current_song;
+                    const cleanName = currentSrc.split('/').pop();
+                    trackName.innerText = cleanName;
+                    trackStatus.innerText = "C Engine Streaming";
+                    
+                    audio.src = `/static/music/${currentSrc}`;
+                    if(isPlaying) audio.play().catch(e => console.log("Autoplay blocked"));
+                    
+                    // Update Art
+                    art.src = `https://picsum.photos/seed/${cleanName}/200`;
+                }
+            } catch (e) {}
+        }, 500);
+
+        // Initial Load
+        setTimeout(() => sendCommand(10), 1000); 
 
     </script>
 </body>
