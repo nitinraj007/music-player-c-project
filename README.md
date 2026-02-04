@@ -83,17 +83,6 @@ Allocates, resizes, and releases memory using malloc(), realloc(), and free() �
 
 This backend design turns traditional C concepts into a real‑world, interactive system, rather than a console‑only program.
 
-🗂️ Project Structure
-The project is organized with a clear separation of concerns between logic, bridge, and interface:
-
-music-player-c-project/
-│
-├── music_player_backend.c   # Core C logic engine (playlist, memory, file handling)
-├── app.py                   # Python Flask bridge (C ↔ Web communication)
-├── templates/
-│   └── index.html           # Frontend UI (controls & audio playback)
-└── songs.txt                # Persistent song database
-
 
 ---
 
