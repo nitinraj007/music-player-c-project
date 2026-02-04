@@ -58,30 +58,41 @@ Dynamic Memory + File System
 
 ---
 
-## 🧠 Role of C Backend
+🔧 Core C Backend Engine
+The C backend acts as the logic engine of the music player.
+While the browser handles audio playback, all decision‑making and data management happen in C, making this project a strong demonstration of system‑level programming.
 
-The C backend is responsible for:
+What the C backend handles
+🧱 Playlist Modeling
+Uses structures to represent songs and playlists in a clean, scalable way.
 
-- Managing playlists using **structures**
-- Storing songs in **dynamic arrays**
-- Handling navigation using **indexes**
-- Implementing shuffle using `rand()`
-- Persisting data using **file handling**
-- Managing memory using `malloc()`, `realloc()`, and `free()`
+📦 Dynamic Song Storage
+Stores songs in dynamically allocated arrays, allowing the playlist to grow at runtime.
 
-This makes the project a **complete practical demonstration of core C concepts**.
+🧭 Playback Navigation Logic
+Manages current track indexing, next/previous traversal, and boundary conditions.
 
----
+🎲 Shuffle Algorithm
+Implements randomized playback using rand() with safe index control.
 
-## 📂 Project Structure
+💾 Persistent Data Layer
+Reads and writes song data using file handling, ensuring data is retained across runs.
+
+🧠 Manual Memory Management
+Allocates, resizes, and releases memory using malloc(), realloc(), and free() — demonstrating low‑level control.
+
+This backend design turns traditional C concepts into a real‑world, interactive system, rather than a console‑only program.
+
+🗂️ Project Structure
+The project is organized with a clear separation of concerns between logic, bridge, and interface:
 
 music-player-c-project/
 │
-├── music_player_backend.c # Core C logic engine
-├── app.py # Python Flask bridge
+├── music_player_backend.c   # Core C logic engine (playlist, memory, file handling)
+├── app.py                   # Python Flask bridge (C ↔ Web communication)
 ├── templates/
-│ └── index.html # Frontend UI
-└── songs.txt # Persistent song storage
+│   └── index.html           # Frontend UI (controls & audio playback)
+└── songs.txt                # Persistent song database
 
 
 ---
